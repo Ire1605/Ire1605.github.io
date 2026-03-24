@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Immanuel Ojji — Robotics & Computer Vision</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:       #070a0f;
+      --bg2:      #0c1118;
+      --bg3:      #111820;
+      --cyan:     #00e5ff;
+      --amber:    #ffab00;
+      --violet:   #a78bfa;
+      --green:    #34d399;
+      --text:     #c9d1d9;
+      --dim:      #586069;
+      --border:   rgba(0,229,255,0.12);
+      --glow:     0 0 20px rgba(0,229,255,0.35);
+      --glow-am:  0 0 20px rgba(255,171,0,0.35);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-weight: 300;
+      line-height: 1.7; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+      pointer-events: none; z-index: 999;
+    }
+    .grid-bg {
+      position: fixed; inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none; z-index: 0; opacity: 0.35;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 4rem; background: rgba(7,10,15,0.88);
+      backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Orbitron', monospace; font-weight: 900; font-size: 0.88rem; color: var(--cyan); letter-spacing: 3px; text-shadow: var(--glow); }
+    nav ul { list-style: none; display: flex; gap: 2.4rem; }
+    nav ul a { font-family: 'Share Tech Mono', monospace; font-size: 0.74rem; color: var(--dim); text-decoration: none; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
+    nav ul a:hover { color: var(--cyan); }
+
+    #hero {
+      position: relative; z-index: 1; min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 0 8rem; overflow: hidden;
+    }
+    .hero-tag { font-family: 'Share Tech Mono', monospace; font-size: 0.76rem; color: var(--cyan); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 1.4rem; opacity: 0; animation: fadeUp 0.6s 0.2s forwards; }
+    .hero-tag::before { content: '> '; }
+    h1 { font-family: 'Orbitron', monospace; font-weight: 900; font-size: clamp(2.6rem, 5.5vw, 5rem); line-height: 1.05; color: #fff; text-shadow: var(--glow); opacity: 0; animation: fadeUp 0.7s 0.4s forwards; }
+    h1 span { color: var(--cyan); }
+    .hero-name { font-family: 'Share Tech Mono', monospace; font-size: 1rem; color: var(--amber); letter-spacing: 3px; margin-top: 0.6rem; opacity: 0; animation: fadeUp 0.6s 0.55s forwards; }
+    .hero-sub { margin-top: 1.4rem; font-size: 1rem; max-width: 520px; color: var(--text); opacity: 0; animation: fadeUp 0.7s 0.65s forwards; }
+    .hero-cta { margin-top: 2.8rem; display: flex; gap: 1.2rem; opacity: 0; animation: fadeUp 0.7s 0.8s forwards; }
+    .btn { font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.82rem 1.8rem; text-decoration: none; border: 1px solid var(--cyan); color: var(--cyan); background: transparent; cursor: pointer; transition: all 0.2s; clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%); }
+    .btn:hover { background: var(--cyan); color: var(--bg); box-shadow: var(--glow); }
+    .btn-solid { background: var(--cyan); color: var(--bg); }
+    .btn-solid:hover { background: transparent; color: var(--cyan); }
+
+    .hero-deco { position: absolute; right: 6rem; top: 50%; transform: translateY(-50%); width: 360px; height: 360px; opacity: 0; animation: fadeIn 1.2s 1s forwards; }
+    .ring { position: absolute; border-radius: 50%; border: 1px solid var(--cyan); }
+    .ring-1 { inset: 0; opacity: 0.25; animation: spin 22s linear infinite; }
+    .ring-2 { inset: 28px; opacity: 0.12; border-style: dashed; animation: spin 16s linear infinite reverse; }
+    .ring-3 { inset: 78px; opacity: 0.45; border-color: var(--amber); animation: spin 9s linear infinite; }
+    .ring-inner { position: absolute; inset: 118px; border-radius: 50%; border: 2px solid var(--cyan); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+    .ring-label { font-family: 'Orbitron', monospace; font-size: 0.55rem; color: var(--cyan); letter-spacing: 2px; text-align: center; text-shadow: var(--glow); line-height: 1.6; }
+    .ring-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); }
+
+    section { position: relative; z-index: 1; padding: 7rem 8rem; }
+    .section-label { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--cyan); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .section-label::before { content: '// '; }
+    h2 { font-family: 'Orbitron', monospace; font-weight: 700; font-size: clamp(1.5rem, 3vw, 2.3rem); color: #fff; margin-bottom: 3rem; position: relative; display: inline-block; }
+    h2::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 55%; height: 2px; background: linear-gradient(90deg, var(--cyan), transparent); }
+
+    #about { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4rem; align-items: start; }
+    .about-text p { margin-bottom: 1rem; font-size: 0.97rem; }
+    .focus-list { margin-top: 1.6rem; display: flex; flex-direction: column; gap: 0.6rem; }
+    .focus-item { display: flex; align-items: center; gap: 0.8rem; font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; color: var(--text); }
+    .focus-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; }
+    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+    .skill-chip { background: var(--bg3); border: 1px solid var(--border); padding: 0.65rem 1rem; font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--cyan); letter-spacing: 1px; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); transition: border-color 0.2s, box-shadow 0.2s; }
+    .skill-chip:hover { border-color: var(--cyan); box-shadow: var(--glow); }
+
+    #projects { background: var(--bg); }
+    .project-filters { display: flex; gap: 0.8rem; margin-bottom: 3rem; flex-wrap: wrap; }
+    .filter-btn { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.45rem 1.1rem; border: 1px solid var(--dim); background: transparent; color: var(--dim); cursor: pointer; transition: all 0.2s; }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--cyan); color: var(--cyan); box-shadow: var(--glow); }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .project-card { background: var(--bg2); border: 1px solid var(--border); padding: 2rem; position: relative; overflow: hidden; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s; }
+    .project-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--cyan), transparent); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+    .project-card:hover { border-color: rgba(0,229,255,0.4); transform: translateY(-4px); box-shadow: 0 8px 40px rgba(0,229,255,0.1); }
+    .project-card:hover::before { transform: scaleX(1); }
+    .card-source { display: inline-block; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 2px; padding: 0.18rem 0.5rem; margin-bottom: 0.8rem; border: 1px solid var(--border); color: var(--dim); }
+    .source-own { border-color: rgba(0,229,255,0.3); color: var(--cyan); }
+    .source-fork { border-color: rgba(255,171,0,0.3); color: var(--amber); }
+    .source-wip { border-color: rgba(52,211,153,0.3); color: var(--green); }
+    .card-cat { font-family: 'Share Tech Mono', monospace; font-size: 0.66rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.7rem; }
+    .cat-vision   { color: var(--violet); }
+    .cat-mapping  { color: var(--green); }
+    .cat-planning { color: var(--amber); }
+    .card-title { font-family: 'Orbitron', monospace; font-weight: 700; font-size: 0.95rem; color: #fff; margin-bottom: 0.75rem; }
+    .card-desc { font-size: 0.86rem; color: var(--text); line-height: 1.6; margin-bottom: 1.3rem; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.3rem; }
+    .tag { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; padding: 0.22rem 0.55rem; border: 1px solid var(--border); color: var(--dim); }
+    .card-links { display: flex; gap: 1rem; }
+    .card-link { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 1px; text-decoration: none; color: var(--cyan); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+    .card-link:hover { border-color: var(--cyan); }
+    .card-num { position: absolute; bottom: 1rem; right: 1.4rem; font-family: 'Orbitron', monospace; font-size: 2.2rem; color: rgba(255,255,255,0.03); font-weight: 900; }
+
+    #skills-section { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 4rem; }
+    .exp-item { padding: 0.3rem 0; }
+    .exp-header { display: flex; justify-content: space-between; margin-bottom: 0.45rem; font-family: 'Share Tech Mono', monospace; font-size: 0.76rem; color: var(--text); }
+    .exp-pct { color: var(--cyan); }
+    .exp-bar-bg { height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+    .exp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), rgba(0,229,255,0.25)); border-radius: 2px; width: 0; transition: width 1.3s cubic-bezier(0.22,1,0.36,1); }
+
+    #contact { background: var(--bg); text-align: center; }
+    .contact-email { font-family: 'Orbitron', monospace; font-size: clamp(1rem, 2.5vw, 1.7rem); color: var(--cyan); text-shadow: var(--glow); display: block; margin: 2rem 0; text-decoration: none; transition: text-shadow 0.3s; }
+    .contact-email:hover { text-shadow: 0 0 50px rgba(0,229,255,0.7); }
+    .socials { display: flex; justify-content: center; gap: 1.4rem; margin-top: 2rem; flex-wrap: wrap; }
+    .social-link { font-family: 'Share Tech Mono', monospace; font-size: 0.74rem; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); text-decoration: none; border: 1px solid var(--border); padding: 0.55rem 1.3rem; transition: all 0.2s; }
+    .social-link:hover { color: var(--amber); border-color: var(--amber); box-shadow: var(--glow-am); }
+
+    footer { position: relative; z-index: 1; text-align: center; padding: 1.6rem; border-top: 1px solid var(--border); font-family: 'Share Tech Mono', monospace; font-size: 0.66rem; color: var(--dim); letter-spacing: 2px; }
+
+    .cursor { display: inline-block; width: 3px; height: 0.9em; background: var(--cyan); vertical-align: middle; animation: blink 1s step-end infinite; margin-left: 3px; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes spin   { to { transform:rotate(360deg); } }
+    @keyframes blink  { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s, transform 0.7s; }
+    .reveal.visible { opacity:1; transform:none; }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      #hero, section { padding-left: 1.8rem; padding-right: 1.8rem; }
+      .about-grid, .exp-grid { grid-template-columns: 1fr; }
+      .hero-deco { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav>
+  <div class="nav-logo">I.OJJI</div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills-section">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="hero-tag">PhD Researcher · Robotics &amp; Computer Vision</div>
+  <h1>Perception,<br><span>Planning</span> &amp;<br>Active Vision<span class="cursor"></span></h1>
+  <div class="hero-name">// Immanuel Ojji</div>
+  <p class="hero-sub">
+    Building intelligent systems that see, reason, and act — from next-best-view planning to autonomous semantic mapping and real-time object recognition.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-solid">View Projects</a>
+    <a href="#contact" class="btn">Collaborate</a>
+  </div>
+  <div class="hero-deco">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="ring-inner">
+      <div class="ring-dot"></div>
+      <div class="ring-label">ACTIVE<br>VISION<br>SYSTEM</div>
+      <div class="ring-dot"></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="section-label">About me</div>
+  <h2>Research Focus</h2>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm a PhD researcher specialising in robotics and computer vision, with a focus on giving autonomous systems the ability to actively explore, understand, and reason about their environment.</p>
+      <p>My current research centres on <strong style="color:#fff">object recognition in warehouse environments</strong> — building robust perception pipelines that work across varied conditions, object categories, and spatial layouts.</p>
+      <p>I'm particularly passionate about <strong style="color:#fff">active vision</strong>: the question of where a robot should look next to maximise its understanding of a scene, spanning next-best-view planning, 3D reconstruction, and semantic mapping.</p>
+      <div class="focus-list">
+        <div class="focus-item"><div class="focus-dot"></div>Active vision &amp; next-best-view planning</div>
+        <div class="focus-item"><div class="focus-dot"></div>Real-time object recognition &amp; zero-shot detection</div>
+        <div class="focus-item"><div class="focus-dot"></div>Autonomous semantic mapping &amp; exploration</div>
+        <div class="focus-item"><div class="focus-dot"></div>3D scene understanding with CNNs &amp; octree representations</div>
+      </div>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-chip">Python</div>
+      <div class="skill-chip">PyTorch</div>
+      <div class="skill-chip">TensorFlow</div>
+      <div class="skill-chip">OpenCV</div>
+      <div class="skill-chip">C++</div>
+      <div class="skill-chip">MATLAB</div>
+      <div class="skill-chip">Arduino</div>
+      <div class="skill-chip">ROS / ROS2</div>
+      <div class="skill-chip">YOLO World</div>
+      <div class="skill-chip">3D CNN</div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="section-label">Research &amp; Work</div>
+  <h2>Projects</h2>
+  <div class="project-filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="vision">Object Detection</button>
+    <button class="filter-btn" data-filter="planning">View Planning</button>
+    <button class="filter-btn" data-filter="mapping">Semantic Mapping</button>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card reveal" data-cat="vision">
+      <div class="card-source source-own">ORIGINAL</div>
+      <div class="card-cat cat-vision">Computer Vision / AI</div>
+      <div class="card-title">Zero-Shot Object Detection with YOLO-World</div>
+      <div class="card-desc">Implementation of YOLO-World for open-vocabulary, zero-shot object detection — recognising novel object categories without retraining. Critical for flexible warehouse perception where inventory changes constantly.</div>
+      <div class="card-tags">
+        <span class="tag">YOLO-World</span><span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">Zero-Shot</span><span class="tag">Jupyter</span>
+      </div>
+      <div class="card-links">
+        <a href="https://github.com/Ire1605/Ire" class="card-link" target="_blank">GitHub →</a>
+      </div>
+      <div class="card-num">01</div>
+    </div>
+
+    <div class="project-card reveal" data-cat="planning">
+      <div class="card-source source-fork">RESEARCH FORK</div>
+      <div class="card-cat cat-planning">Next-Best-View Planning</div>
+      <div class="card-title">NBV Planning with 3D CNN &amp; Octree</div>
+      <div class="card-desc">Next-best-view planning using a 3D CNN on an octree spatial representation. Enables a robot to autonomously determine optimal camera positions for complete, efficient scene reconstruction.</div>
+      <div class="card-tags">
+        <span class="tag">C++</span><span class="tag">3D CNN</span><span class="tag">Octree</span><span class="tag">Active Vision</span><span class="tag">ROS</span>
+      </div>
+      <div class="card-links">
+        <a href="https://github.com/Ire1605/nbv_3d_cnn_octree" class="card-link" target="_blank">GitHub →</a>
+      </div>
+      <div class="card-num">02</div>
+    </div>
+
+    <div class="project-card reveal" data-cat="mapping">
+      <div class="card-source source-fork">RESEARCH FORK</div>
+      <div class="card-cat cat-mapping">Autonomous Mapping</div>
+      <div class="card-title">AutoX-SemMap: Semantic Map Construction</div>
+      <div class="card-desc">Autonomous exploration, construction, and real-time update of semantic maps. Combines frontier-based exploration with semantic segmentation to build structured, queryable 3D models of unknown environments.</div>
+      <div class="card-tags">
+        <span class="tag">C++</span><span class="tag">Semantic Segmentation</span><span class="tag">SLAM</span><span class="tag">Exploration</span><span class="tag">ROS</span>
+      </div>
+      <div class="card-links">
+        <a href="https://github.com/Ire1605/AutoX-SemMap" class="card-link" target="_blank">GitHub →</a>
+      </div>
+      <div class="card-num">03</div>
+    </div>
+
+    <div class="project-card reveal" data-cat="vision">
+      <div class="card-source source-wip">IN PROGRESS</div>
+      <div class="card-cat cat-vision">Computer Vision / AI</div>
+      <div class="card-title">Warehouse Object Recognition System</div>
+      <div class="card-desc">PhD research: designing a robust perception system for warehouse object recognition. Addresses occlusion, varied lighting, and open-set object categories in dynamic industrial environments.</div>
+      <div class="card-tags">
+        <span class="tag">PyTorch</span><span class="tag">OpenCV</span><span class="tag">Object Detection</span><span class="tag">Domain Adaptation</span>
+      </div>
+      <div class="card-links">
+        <a href="mailto:immaojji@gmail.com" class="card-link">Enquire →</a>
+      </div>
+      <div class="card-num">04</div>
+    </div>
+
+  </div>
+</section>
+
+<section id="skills-section">
+  <div class="section-label">Proficiency</div>
+  <h2>Technical Skills</h2>
+  <div class="exp-grid reveal" id="skills-bars">
+    <div class="exp-item"><div class="exp-header"><span>Computer Vision &amp; Perception</span><span class="exp-pct">90%</span></div><div class="exp-bar-bg"><div class="exp-bar-fill" data-w="90"></div></div></div>
+    <div class="exp-item"><div class="exp-header"><span>Python / PyTorch / TensorFlow</span><span class="exp-pct">88%</span></div><div class="exp-bar-bg"><div class="exp-bar-fill" data-w="88"></div></div></div>
+    <div class="exp-item"><div class="exp-header"><span>3D Scene Understanding</span><span class="exp-pct">82%</span></div><div class="exp-bar-bg"><div class="exp-bar-fill" data-w="82"></div></div></div>
+    <div class="exp-item"><div class="exp-header"><span>C++ / Robotics Middleware (ROS)</span><span class="exp-pct">78%</span></div><div class="exp-bar-bg"><div class="exp-bar-fill" data-w="78"></div></div></div>
+    <div class="exp-item"><div class="exp-header"><span>Active Vision &amp; NBV Planning</span><span class="exp-pct">85%</span></div><div class="exp-bar-bg"><div class="exp-bar-fill" data-w="85"></div></div></div>
+    <div class="exp-item"><div class="exp-header"><span>MATLAB &amp; Embedded (Arduino)</span><span class="exp-pct">72%</span></div><div class="exp-bar-bg"><div class="exp-bar-fill" data-w="72"></div></div></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-label">Contact</div>
+  <h2>Let's Collaborate</h2>
+  <p style="color:var(--text);max-width:500px;margin:0 auto;font-size:0.97rem;">
+    Open to research collaborations, PhD discussions, and industry projects in robotics, computer vision, and active perception. I respond to every message.
+  </p>
+  <a href="mailto:immaojji@gmail.com" class="contact-email">immaojji@gmail.com</a>
+  <div class="socials">
+    <a href="https://github.com/Ire1605" class="social-link" target="_blank">GitHub</a>
+    <a href="https://linkedin.com/in/immanuel-ojji" class="social-link" target="_blank">LinkedIn</a>
+    <a href="https://www.youtube.com/c/@ireojji" class="social-link" target="_blank">YouTube</a>
+    <a href="https://twitter.com/ire" class="social-link" target="_blank">Twitter / X</a>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 Immanuel Ojji — PhD Researcher, Robotics &amp; Computer Vision
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+
+  const barObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.exp-bar-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+        barObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  const sbEl = document.getElementById('skills-bars');
+  if (sbEl) barObs.observe(sbEl);
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      document.querySelectorAll('.project-card').forEach(c => {
+        c.style.display = (f === 'all' || c.dataset.cat === f) ? '' : 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>
