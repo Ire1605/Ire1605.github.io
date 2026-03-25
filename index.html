@@ -14,6 +14,7 @@
       --amber:    #ffab00;
       --violet:   #a78bfa;
       --green:    #34d399;
+      --rose:     #fb7185;
       --text:     #c9d1d9;
       --dim:      #586069;
       --border:   rgba(0,229,255,0.12);
@@ -101,13 +102,15 @@
     .project-card:hover { border-color: rgba(0,229,255,0.4); transform: translateY(-4px); box-shadow: 0 8px 40px rgba(0,229,255,0.1); }
     .project-card:hover::before { transform: scaleX(1); }
     .card-source { display: inline-block; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 2px; padding: 0.18rem 0.5rem; margin-bottom: 0.8rem; border: 1px solid var(--border); color: var(--dim); }
-    .source-own { border-color: rgba(0,229,255,0.3); color: var(--cyan); }
-    .source-fork { border-color: rgba(255,171,0,0.3); color: var(--amber); }
-    .source-wip { border-color: rgba(52,211,153,0.3); color: var(--green); }
+    .source-own  { border-color: rgba(0,229,255,0.3);   color: var(--cyan); }
+    .source-fork { border-color: rgba(255,171,0,0.3);   color: var(--amber); }
+    .source-wip  { border-color: rgba(52,211,153,0.3);  color: var(--green); }
     .card-cat { font-family: 'Share Tech Mono', monospace; font-size: 0.66rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.7rem; }
-    .cat-vision   { color: var(--violet); }
-    .cat-mapping  { color: var(--green); }
-    .cat-planning { color: var(--amber); }
+    .cat-vision    { color: var(--violet); }
+    .cat-mapping   { color: var(--green); }
+    .cat-planning  { color: var(--amber); }
+    .cat-control   { color: var(--rose); }
+    .cat-sim       { color: #60a5fa; }
     .card-title { font-family: 'Orbitron', monospace; font-weight: 700; font-size: 0.95rem; color: #fff; margin-bottom: 0.75rem; }
     .card-desc { font-size: 0.86rem; color: var(--text); line-height: 1.6; margin-bottom: 1.3rem; }
     .card-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.3rem; }
@@ -227,8 +230,12 @@
     <button class="filter-btn" data-filter="vision">Object Detection</button>
     <button class="filter-btn" data-filter="planning">View Planning</button>
     <button class="filter-btn" data-filter="mapping">Semantic Mapping</button>
+    <button class="filter-btn" data-filter="control">Robot Control</button>
+    <button class="filter-btn" data-filter="sim">Simulation</button>
   </div>
   <div class="projects-grid">
+
+    <!-- ── EXISTING PROJECTS ─────────────────────────────────────────── -->
 
     <div class="project-card reveal" data-cat="vision">
       <div class="card-source source-own">ORIGINAL</div>
@@ -284,6 +291,64 @@
         <a href="mailto:immaojji@gmail.com" class="card-link">Enquire →</a>
       </div>
       <div class="card-num">04</div>
+    </div>
+
+    <!-- ── NEW PROJECTS ───────────────────────────────────────────────── -->
+
+    <div class="project-card reveal" data-cat="vision">
+      <div class="card-source source-own">ORIGINAL</div>
+      <div class="card-cat cat-vision">Computer Vision / AI</div>
+      <div class="card-title">Real-Time Multi-Object Tracking Pipeline</div>
+      <div class="card-desc">YOLOv8 detection fused with a centroid tracker using Hungarian algorithm assignment. Draws per-object motion trails, runs on webcam, video files, or RTSP streams with GPU acceleration. Designed as a drop-in perception module for ROS2 robots.</div>
+      <div class="card-tags">
+        <span class="tag">YOLOv8</span><span class="tag">Python</span><span class="tag">OpenCV</span><span class="tag">PyTorch</span><span class="tag">Tracking</span>
+      </div>
+      <div class="card-links">
+        <a href="https://github.com/Ire1605/cv-object-tracking-pipeline" class="card-link" target="_blank">GitHub →</a>
+      </div>
+      <div class="card-num">05</div>
+    </div>
+
+    <div class="project-card reveal" data-cat="control">
+      <div class="card-source source-own">ORIGINAL</div>
+      <div class="card-cat cat-control">Robot Control / ROS2</div>
+      <div class="card-title">ROS2 Vision-Guided Robot</div>
+      <div class="card-desc">Three-node ROS2 package: a Python lane-detection node (OpenCV Hough lines), a Python obstacle node (depth camera or LiDAR), and a C++ velocity controller publishing to /cmd_vel with speed scaling and emergency stop. Includes full Gazebo launch file.</div>
+      <div class="card-tags">
+        <span class="tag">ROS2</span><span class="tag">C++</span><span class="tag">Python</span><span class="tag">OpenCV</span><span class="tag">Gazebo</span>
+      </div>
+      <div class="card-links">
+        <a href="https://github.com/Ire1605/ros2-vision-guided-robot" class="card-link" target="_blank">GitHub →</a>
+      </div>
+      <div class="card-num">06</div>
+    </div>
+
+    <div class="project-card reveal" data-cat="control">
+      <div class="card-source source-own">ORIGINAL</div>
+      <div class="card-cat cat-control">Embedded / Arduino</div>
+      <div class="card-title">Arduino PID Line Follower + Vision Bridge</div>
+      <div class="card-desc">5-sensor IR line follower with a header-only PID controller (anti-windup clamping) on Arduino. A Python host bridge adds top-down camera corrections over serial in real time, with a live Matplotlib telemetry plot streaming error and PWM data.</div>
+      <div class="card-tags">
+        <span class="tag">Arduino</span><span class="tag">Embedded C</span><span class="tag">PID</span><span class="tag">Python</span><span class="tag">OpenCV</span>
+      </div>
+      <div class="card-links">
+        <a href="https://github.com/Ire1605/arduino-pid-line-follower" class="card-link" target="_blank">GitHub →</a>
+      </div>
+      <div class="card-num">07</div>
+    </div>
+
+    <div class="project-card reveal" data-cat="sim">
+      <div class="card-source source-own">ORIGINAL</div>
+      <div class="card-cat cat-sim">Simulation / Digital Twin</div>
+      <div class="card-title">Digital Twin — Hand-Controlled 3-DOF Arm</div>
+      <div class="card-desc">Real-time digital twin of a 3-DOF robotic arm driven by MediaPipe hand gestures via webcam. Analytical IK solver (law of cosines) with gradient-descent fallback, live 3-D Matplotlib visualiser in a background thread, and a standalone MATLAB simulation with animated Jacobian IK.</div>
+      <div class="card-tags">
+        <span class="tag">MediaPipe</span><span class="tag">Python</span><span class="tag">MATLAB</span><span class="tag">Kinematics</span><span class="tag">Digital Twin</span>
+      </div>
+      <div class="card-links">
+        <a href="https://github.com/Ire1605/digital-twin-robotic-arm" class="card-link" target="_blank">GitHub →</a>
+      </div>
+      <div class="card-num">08</div>
     </div>
 
   </div>
